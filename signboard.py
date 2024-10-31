@@ -101,7 +101,7 @@ class EmailSignboard:
             self.logger.error(f"Failed to connect to email server: {e}")
             raise
 
-    def process_email_content(self, email_message: email.message.Message) -> str:
+    def process_email_content(self, email_message: email.message.Message="Be kind, rewind! 🤠") -> str:
         """Extract and process content from email message"""
         content = ""
         if email_message.is_multipart():
