@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>BW Integrated Systems - Digital Signboard</title>
+    <title>BWIS Loveland - Digital Signboard</title>
     <meta http-equiv="refresh" content="300">
     <link rel="stylesheet" href="signboard-styles.css">
 </head>
@@ -25,7 +25,7 @@
                 <div class="card-module">
                     <div class="card-container">
                         {% for card in info_cards %}
-                        <div class="card-slide {% if loop.first %}active{% endif %}" data-index="{{ loop.index0 }}">
+                        <div class="card-slide {% if loop.first %}active{% endif %}">
                             <img src="{{ card.image }}" alt="{{ card.title }}" class="card-image">
                             <div class="card-content">
                                 <h3>{{ card.title }}</h3>
@@ -35,16 +35,12 @@
                         {% endfor %}
                     </div>
                     <div class="card-nav">
-                        <button class="prev-btn" aria-label="Previous slide">&lt;</button>
-                        <button class="next-btn" aria-label="Next slide">&gt;</button>
+                        <button class="prev-btn">&lt;</button>
+                        <button class="next-btn">&gt;</button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="footer">
-        © {% now 'utc', '%Y' %} BW Integrated Systems
     </div>
 
     <script src="signboard-cards.js"></script>
