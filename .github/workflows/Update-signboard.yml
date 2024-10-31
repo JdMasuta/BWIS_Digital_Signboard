@@ -27,7 +27,7 @@ jobs:
           EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           IMAP_SERVER: ${{ secrets.IMAP_SERVER }}
-        run: python scripts/update_signboard.py
+        run: python signboard.py
           
       - name: Commit and push if changed
         run: |
