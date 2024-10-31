@@ -1,5 +1,6 @@
 import imaplib
 import email
+from email.message import Message
 import time
 import html
 import os
@@ -101,7 +102,7 @@ class EmailSignboard:
             self.logger.error(f"Failed to connect to email server: {e}")
             raise
 
-    def process_email_content(self, email_message: email.message.Message="Be kind, rewind! 🤠") -> str:
+    def process_email_content(self, email_message: Message) -> str:
         """Extract and process content from email message"""
         content = ""
         if email_message.is_multipart():
@@ -121,23 +122,24 @@ class EmailSignboard:
             mail.select('inbox')
             _, messages = mail.search(None, 'UNSEEN')
             
-            for num in messages[0].split():
-                try:
-                    _, msg_data = mail.fetch(num, '(RFC822)')
-                    email_body = msg_data[0][1]
-                    email_message = email.message_from_bytes(email_body)
-                    
-                    content = self.process_email_content(email_message)
-                    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    
-                    posts.append({
-                        'content': content,
-                        'timestamp': timestamp
-                    })
-                    self.logger.info(f"Processed new email at {timestamp}")
-                except Exception as e:
-                    self.logger.error(f"Error processing email: {e}")
-                    continue
+            if messages[0]:  # Check if there are any messages
+                for num in messages[0].split():
+                    try:
+                        _, msg_data = mail.fetch(num, '(RFC822)')
+                        email_body = msg_data[0][1]
+                        email_message = email.message_from_bytes(email_body)
+                        
+                        content = self.process_email_content(email_message)
+                        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        
+                        posts.append({
+                            'content': content,
+                            'timestamp': timestamp
+                        })
+                        self.logger.info(f"Processed new email at {timestamp}")
+                    except Exception as e:
+                        self.logger.error(f"Error processing email: {e}")
+                        continue
                     
         except Exception as e:
             self.logger.error(f"Error accessing inbox: {e}")
