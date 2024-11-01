@@ -6,11 +6,6 @@
     --bw-text: #333333;
     --spacing-unit: 20px;
     --border-radius: 4px;
-    
-    /* Font weights for Museo Sans */
-    --font-weight-light: 300;
-    --font-weight-regular: 500;
-    --font-weight-bold: 700;
 }
 
 /* Reset and base styles */
@@ -21,60 +16,115 @@
 }
 
 body {
-    font-family: "museo-sans", sans-serif;
-    font-weight: var(--font-weight-regular);
+    font-family: Arial, sans-serif;
     background-color: var(--bw-gray);
     color: var(--bw-text);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
 }
 
-/* Typography */
-h1, h2, h3, h4, h5, h6 {
-    font-family: "museo-sans", sans-serif;
-    font-weight: var(--font-weight-light);
-}
-
-/* Header */
+/* Layout */
 .header {
     background-color: var(--bw-dark);
     color: white;
     padding: var(--spacing-unit);
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.header h1 {
-    margin: 0;
-    font-weight: var(--font-weight-light);
-    font-size: 2.5em;
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-unit);
 }
 
-/* Rest of the CSS remains the same as before, but let's update specific typography elements */
-
-.post .content {
-    font-size: 1.1em;
-    line-height: 1.6;
-    margin-bottom: 15px;
-    font-weight: var(--font-weight-regular);
+.grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--spacing-unit);
 }
 
-.post .timestamp {
-    color: var(--bw-dark);
+/* Posts area */
+.posts-area {
+    background: white;
+    padding: var(--spacing-unit);
+    border-radius: var(--border-radius);
+}
+
+.post {
+    margin-bottom: var(--spacing-unit);
+    padding-bottom: var(--spacing-unit);
+    border-bottom: 1px solid var(--bw-gray);
+}
+
+.post:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.timestamp {
+    color: #666;
     font-size: 0.9em;
-    font-style: italic;
-    font-weight: var(--font-weight-light);
+    margin-top: 5px;
+}
+
+/* Cards area */
+.cards-area {
+    background: white;
+    padding: var(--spacing-unit);
+    border-radius: var(--border-radius);
+}
+
+.card-module {
+    position: relative;
+}
+
+.card-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--border-radius);
+}
+
+.card-slide {
+    display: none;
+}
+
+.card-slide.active {
+    display: block;
+}
+
+.card-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.card-content {
+    padding: var(--spacing-unit);
 }
 
 .card-content h3 {
-    font-weight: var(--font-weight-bold);
-    margin-bottom: 8px;
-    font-size: 1.3em;
+    margin-bottom: 10px;
+    color: var(--bw-dark);
 }
 
-.card-content p {
-    font-weight: var(--font-weight-regular);
-    line-height: 1.4;
+/* Navigation buttons */
+.card-nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
 }
 
-/* [Previous CSS remains the same...] */
+.prev-btn,
+.next-btn {
+    background: var(--bw-blue);
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    cursor: pointer;
+    border-radius: var(--border-radius);
+}
+
+.prev-btn:hover,
+.next-btn:hover {
+    background: var(--bw-dark);
+}
