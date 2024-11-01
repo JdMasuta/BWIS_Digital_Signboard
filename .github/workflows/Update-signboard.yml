@@ -39,7 +39,7 @@ jobs:
           cp responsive-styles.css static/responsive.css
           
       - name: Update signboard content
-        run: python signboard.py --test
+        run: python signboard.py --test --github
           
       - name: Configure Git
         run: |
