@@ -11,7 +11,12 @@ from jinja2 import Environment, FileSystemLoader
 from typing import List, Dict, Optional
 import shutil
 
-# [Previous imports remain the same]
+class InfoCard:
+    """Class representing an information card with image"""
+    def __init__(self, title: str, description: str, image_path: str):
+        self.title = title
+        self.description = description
+        self.image_path = image_path
 
 class SignboardConfig:
     """Configuration settings for the signboard"""
@@ -21,7 +26,7 @@ class SignboardConfig:
                  imap_server: str = "imap.gmail.com",
                  check_interval: int = 300,
                  max_posts: int = 20,
-                 template_name: str = "index.html"):  # Changed template name
+                 template_name: str = "index.html"):
         self.email_address = email_address
         self.password = password
         self.imap_server = imap_server
@@ -40,7 +45,11 @@ class EmailSignboard:
         self.base_dir = os.path.dirname(os.path.abspath(__file__))
         self.static_dir = os.path.join(self.base_dir, 'static')
         self.images_dir = os.path.join(self.static_dir, 'images')
-        self.html_path = os.path.join(self.base_dir, 'index.html')  # Changed output path
+        self.html_path = os.path.join(self.base_dir, 'index.html')
+        
+        # Create directories if they don't exist
+        os.makedirs(self.static_dir, exist_ok=True)
+        os.makedirs(self.images_dir, exist_ok=True)
         
         # Setup logging
         self._setup_logging()
@@ -52,12 +61,89 @@ class EmailSignboard:
         # Scan for existing images
         self.scan_images()
 
-    # [Rest of the class implementation remains the same until update_webpage]
+    def _setup_logging(self) -> None:
+        """Setup logging configuration"""
+        self.logger = logging.getLogger('signboard')
+        self.logger.setLevel(logging.INFO)
+        
+        # Create handlers
+        console_handler = logging.StreamHandler()
+        file_handler = logging.FileHandler('signboard.log')
+        
+        # Create formatters and add it to handlers
+        log_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        console_handler.setFormatter(log_format)
+        file_handler.setFormatter(log_format)
+        
+        # Add handlers to the logger
+        self.logger.addHandler(console_handler)
+        self.logger.addHandler(file_handler)
+
+    def scan_images(self) -> None:
+        """Scan the images directory for existing card images"""
+        try:
+            for filename in os.listdir(self.images_dir):
+                if filename.endswith(('.jpg', '.jpeg', '.png')):
+                    title = os.path.splitext(filename)[0].replace('_', ' ').title()
+                    self.info_cards.append(InfoCard(
+                        title=title,
+                        description=f"Information about {title}",
+                        image_path=f"static/images/{filename}"
+                    ))
+            self.logger.info(f"Found {len(self.info_cards)} existing images")
+        except Exception as e:
+            self.logger.error(f"Error scanning images: {e}")
+
+    def connect_to_inbox(self) -> imaplib.IMAP4_SSL:
+        """Connect to email server and return IMAP connection"""
+        try:
+            mail = imaplib.IMAP4_SSL(self.config.imap_server)
+            mail.login(self.config.email_address, self.config.password)
+            mail.select('inbox')
+            return mail
+        except Exception as e:
+            self.logger.error(f"Error connecting to email: {e}")
+            raise
+
+    def get_email_content(self, mail: imaplib.IMAP4_SSL) -> List[Dict[str, str]]:
+        """Fetch and process email content"""
+        try:
+            _, messages = mail.search(None, 'UNSEEN')
+            email_content = []
+            
+            for num in messages[0].split():
+                _, msg = mail.fetch(num, '(RFC822)')
+                email_message = email.message_from_bytes(msg[0][1])
+                
+                content = self._extract_email_content(email_message)
+                if content:
+                    email_content.append({
+                        'content': content,
+                        'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    })
+            
+            return email_content
+        except Exception as e:
+            self.logger.error(f"Error getting email content: {e}")
+            return []
+
+    def _extract_email_content(self, email_message: Message) -> Optional[str]:
+        """Extract content from email message"""
+        try:
+            if email_message.is_multipart():
+                for part in email_message.walk():
+                    if part.get_content_type() == "text/plain":
+                        return html.escape(part.get_payload(decode=True).decode())
+            else:
+                return html.escape(email_message.get_payload(decode=True).decode())
+        except Exception as e:
+            self.logger.error(f"Error extracting email content: {e}")
+            return None
 
     def update_webpage(self, new_posts: List[Dict[str, str]]) -> None:
         """Update the HTML file with new content and info cards"""
         try:
-            template = self.env.get_template('index.html')  # Changed template name
+            template = self.env.get_template(self.config.template_name)
             
             # Prepare card data
             card_data = [{
