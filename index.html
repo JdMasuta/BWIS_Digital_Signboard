@@ -18,26 +18,47 @@
     <div class="container">
         <div class="grid">
             <div class="posts-area">
-                {% for post in posts %}
+                
                 <div class="post">
-                    <div class="content">{{ post.content }}</div>
-                    <div class="timestamp">Posted: {{ post.timestamp }}</div>
+                    <div class="content">Welcome to BWIS Loveland Digital Signboard! Check out our information cards.</div>
+                    <div class="timestamp">Posted: 2024-11-01 05:33:15</div>
                 </div>
-                {% endfor %}
+                
+                <div class="post">
+                    <div class="content">This is a test post to demonstrate the layout. The cards on the right show our latest updates.</div>
+                    <div class="timestamp">Posted: 2024-11-01 05:33:15</div>
+                </div>
+                
             </div>
 
             <div class="cards-area">
                 <div class="card-module">
                     <div class="card-container">
-                        {% for card in info_cards %}
-                        <div class="card-slide {% if loop.first %}active{% endif %}">
-                            <img src="{{ card.image }}" alt="{{ card.title }}" class="card-image" loading="lazy">
+                        
+                        <div class="card-slide active">
+                            <img src="images/PXL_20241030_050610180.jpg" alt="Pxl 20241030 050610180" class="card-image" loading="lazy">
                             <div class="card-content">
-                                <h3>{{ card.title }}</h3>
-                                <p>{{ card.description }}</p>
+                                <h3>Pxl 20241030 050610180</h3>
+                                <p>Information about Pxl 20241030 050610180</p>
                             </div>
                         </div>
-                        {% endfor %}
+                        
+                        <div class="card-slide ">
+                            <img src="images/PXL_20241030_050606062.jpg" alt="Pxl 20241030 050606062" class="card-image" loading="lazy">
+                            <div class="card-content">
+                                <h3>Pxl 20241030 050606062</h3>
+                                <p>Information about Pxl 20241030 050606062</p>
+                            </div>
+                        </div>
+                        
+                        <div class="card-slide ">
+                            <img src="images/PXL_20241023_023050447.jpg" alt="Pxl 20241023 023050447" class="card-image" loading="lazy">
+                            <div class="card-content">
+                                <h3>Pxl 20241023 023050447</h3>
+                                <p>Information about Pxl 20241023 023050447</p>
+                            </div>
+                        </div>
+                        
                     </div>
                     <div class="card-nav">
                         <button class="prev-btn" aria-label="Previous card">&#8249;</button>
