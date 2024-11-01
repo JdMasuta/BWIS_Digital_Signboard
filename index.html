@@ -1,14 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#44525F">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>BWIS Loveland</title>
     <link rel="stylesheet" href="signboard-styles.css">
+    <link rel="stylesheet" href="responsive-styles.css">
 </head>
 <body>
-    <div class="header">
+    <header class="header">
         <h1>BWIS Loveland</h1>
-    </div>
-    
+    </header>
+
     <div class="container">
         <div class="grid">
             <div class="posts-area">
@@ -19,13 +25,13 @@
                 </div>
                 {% endfor %}
             </div>
-            
+
             <div class="cards-area">
                 <div class="card-module">
                     <div class="card-container">
                         {% for card in info_cards %}
                         <div class="card-slide {% if loop.first %}active{% endif %}">
-                            <img src="{{ card.image }}" alt="{{ card.title }}" class="card-image">
+                            <img src="{{ card.image }}" alt="{{ card.title }}" class="card-image" loading="lazy">
                             <div class="card-content">
                                 <h3>{{ card.title }}</h3>
                                 <p>{{ card.description }}</p>
@@ -33,16 +39,51 @@
                         </div>
                         {% endfor %}
                     </div>
-                    
                     <div class="card-nav">
-                        <button class="prev-btn">&lt;</button>
-                        <button class="next-btn">&gt;</button>
+                        <button class="prev-btn" aria-label="Previous card">&#8249;</button>
+                        <button class="next-btn" aria-label="Next card">&#8250;</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <script src="signboard-cards.js"></script>
+    <script>
+        // Add touch event handling
+        document.addEventListener('DOMContentLoaded', function() {
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            const cardContainers = document.querySelectorAll('.card-container');
+            
+            cardContainers.forEach(container => {
+                container.addEventListener('touchstart', e => {
+                    touchStartX = e.changedTouches[0].screenX;
+                }, false);
+                
+                container.addEventListener('touchend', e => {
+                    touchEndX = e.changedTouches[0].screenX;
+                    handleSwipe(container);
+                }, false);
+            });
+            
+            function handleSwipe(container) {
+                const threshold = 50;
+                const diff = touchStartX - touchEndX;
+                
+                if (Math.abs(diff) > threshold) {
+                    const module = container.closest('.card-module');
+                    if (diff > 0) {
+                        // Swipe left - next
+                        module.querySelector('.next-btn').click();
+                    } else {
+                        // Swipe right - previous
+                        module.querySelector('.prev-btn').click();
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
