@@ -36,12 +36,7 @@ jobs:
           cp responsive-styles.css static/responsive.css
           
       - name: Update signboard content
-        env:
-          EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-          IMAP_SERVER: ${{ secrets.IMAP_SERVER }}
-        run: |
-          python signboard.py --email "$EMAIL_ADDRESS" --password "$EMAIL_PASSWORD" --test
+        run: python signboard.py --test
           
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
