@@ -10,6 +10,7 @@ from email.header import decode_header
 from jinja2 import Environment, FileSystemLoader
 from typing import List, Dict, Optional
 import shutil
+import glob
 
 class InfoCard:
     """Class representing an information card with image"""
@@ -44,12 +45,11 @@ class EmailSignboard:
         # Setup paths
         self.base_dir = os.path.dirname(os.path.abspath(__file__))
         self.static_dir = os.path.join(self.base_dir, 'static')
-        self.images_dir = os.path.join(self.static_dir, 'images')
+        self.images_dir = os.path.join(self.base_dir, 'images')  # Changed to use base images directory
         self.html_path = os.path.join(self.base_dir, 'index.html')
         
-        # Create directories if they don't exist
+        # Create static directory if it doesn't exist
         os.makedirs(self.static_dir, exist_ok=True)
-        os.makedirs(self.images_dir, exist_ok=True)
         
         # Setup logging
         self._setup_logging()
@@ -82,15 +82,33 @@ class EmailSignboard:
     def scan_images(self) -> None:
         """Scan the images directory for existing card images"""
         try:
-            for filename in os.listdir(self.images_dir):
-                if filename.endswith(('.jpg', '.jpeg', '.png')):
-                    title = os.path.splitext(filename)[0].replace('_', ' ').title()
-                    self.info_cards.append(InfoCard(
-                        title=title,
-                        description=f"Information about {title}",
-                        image_path=f"static/images/{filename}"
-                    ))
-            self.logger.info(f"Found {len(self.info_cards)} existing images")
+            # Clear existing cards
+            self.info_cards.clear()
+            
+            # Look for images with common formats
+            image_patterns = ['*.jpg', '*.jpeg', '*.png', '*.gif']
+            image_files = []
+            for pattern in image_patterns:
+                image_files.extend(glob.glob(os.path.join(self.images_dir, pattern)))
+            
+            for image_path in image_files:
+                filename = os.path.basename(image_path)
+                title = os.path.splitext(filename)[0].replace('_', ' ').title()
+                
+                # Create relative path for the image
+                relative_path = os.path.join('images', filename)
+                
+                self.info_cards.append(InfoCard(
+                    title=title,
+                    description=f"Information about {title}",
+                    image_path=relative_path
+                ))
+            
+            self.logger.info(f"Found {len(self.info_cards)} images in {self.images_dir}")
+            
+            if not self.info_cards:
+                self.logger.warning(f"No images found in {self.images_dir}")
+            
         except Exception as e:
             self.logger.error(f"Error scanning images: {e}")
 
@@ -162,7 +180,7 @@ class EmailSignboard:
             with open(self.html_path, 'w', encoding='utf-8') as f:
                 f.write(html_content)
                 
-            self.logger.info(f"Updated webpage with {len(new_posts)} new posts")
+            self.logger.info(f"Updated webpage with {len(new_posts)} new posts and {len(card_data)} cards")
         except Exception as e:
             self.logger.error(f"Error updating webpage: {e}")
             raise
@@ -200,17 +218,21 @@ def create_test_content() -> None:
     # Create test posts
     test_posts = [
         {
-            'content': 'Welcome to BWIS Loveland Digital Signboard!',
+            'content': 'Welcome to BWIS Loveland Digital Signboard! Check out our information cards.',
             'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         },
         {
-            'content': 'This is a test post to demonstrate the layout.',
+            'content': 'This is a test post to demonstrate the layout. The cards on the right show our latest updates.',
             'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
     ]
     
+    # Log the cards that were found
+    for card in signboard.info_cards:
+        print(f"Found card: {card.title} with image: {card.image_path}")
+    
     signboard.update_webpage(test_posts)
-    print("Test content created successfully")
+    print(f"Test content created successfully with {len(signboard.info_cards)} information cards")
 
 if __name__ == "__main__":
     import argparse
