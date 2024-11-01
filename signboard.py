@@ -27,13 +27,43 @@ class SignboardConfig:
                  imap_server: str = "imap.gmail.com",
                  check_interval: int = 300,
                  max_posts: int = 20,
-                 template_name: str = "index.html"):
+                 template_name: str = "index.html",
+                 is_github_pages: bool = False):  # New parameter
         self.email_address = email_address
         self.password = password
         self.imap_server = imap_server
         self.check_interval = check_interval
         self.max_posts = max_posts
         self.template_name = template_name
+        self.is_github_pages = is_github_pages  # New field
+
+def create_test_content(is_github_pages: bool = False) -> None:
+    """Create test content for development"""
+    config = SignboardConfig(
+        email_address="test@example.com",
+        password="test_password",
+        is_github_pages=is_github_pages
+    )
+    signboard = EmailSignboard(config)
+    
+    # Create test posts
+    test_posts = [
+        {
+            'content': 'Welcome to BWIS Loveland Digital Signboard! Check out our information cards.',
+            'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        },
+        {
+            'content': 'This is a test post to demonstrate the layout. The cards on the right show our latest updates.',
+            'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+    ]
+
+    # Log the cards that were found
+    for card in signboard.info_cards:
+        print(f"Found card: {card.title} with image: {card.image_path}")
+    
+    signboard.update_webpage(test_posts)
+    print(f"Test content created successfully with {len(signboard.info_cards)} information cards")
 
 class EmailSignboard:
     """Main signboard class handling email monitoring and webpage updates"""
@@ -207,33 +237,6 @@ class EmailSignboard:
                 self.logger.error(f"Error in main loop: {e}")
                 time.sleep(60)  # Wait before retrying
 
-def create_test_content() -> None:
-    """Create test content for development"""
-    config = SignboardConfig(
-        email_address="test@example.com",
-        password="test_password"
-    )
-    signboard = EmailSignboard(config)
-    
-    # Create test posts
-    test_posts = [
-        {
-            'content': 'Welcome to BWIS Loveland Digital Signboard! Check out our information cards.',
-            'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        },
-        {
-            'content': 'This is a test post to demonstrate the layout. The cards on the right show our latest updates.',
-            'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        }
-    ]
-    
-    # Log the cards that were found
-    for card in signboard.info_cards:
-        print(f"Found card: {card.title} with image: {card.image_path}")
-    
-    signboard.update_webpage(test_posts)
-    print(f"Test content created successfully with {len(signboard.info_cards)} information cards")
-
 if __name__ == "__main__":
     import argparse
     
@@ -242,16 +245,18 @@ if __name__ == "__main__":
     parser.add_argument('--password', help='Email password')
     parser.add_argument('--test', action='store_true', help='Create test content')
     parser.add_argument('--interval', type=int, default=300, help='Check interval in seconds')
+    parser.add_argument('--github', action='store_true', help='Use GitHub Pages paths')
     
     args = parser.parse_args()
     
     if args.test:
-        create_test_content()
+        create_test_content(is_github_pages=args.github)
     elif args.email and args.password:
         config = SignboardConfig(
             email_address=args.email,
             password=args.password,
-            check_interval=args.interval
+            check_interval=args.interval,
+            is_github_pages=args.github
         )
         signboard = EmailSignboard(config)
         signboard.run()
