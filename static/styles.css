@@ -1,0 +1,130 @@
+/* Base variables and colors */
+:root {
+    --bw-blue: #00A4E3;
+    --bw-dark: #44525F;
+    --bw-gray: #F4F4F4;
+    --bw-text: #333333;
+    --spacing-unit: 20px;
+    --border-radius: 4px;
+}
+
+/* Reset and base styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--bw-gray);
+    color: var(--bw-text);
+}
+
+/* Layout */
+.header {
+    background-color: var(--bw-dark);
+    color: white;
+    padding: var(--spacing-unit);
+    text-align: center;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-unit);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--spacing-unit);
+}
+
+/* Posts area */
+.posts-area {
+    background: white;
+    padding: var(--spacing-unit);
+    border-radius: var(--border-radius);
+}
+
+.post {
+    margin-bottom: var(--spacing-unit);
+    padding-bottom: var(--spacing-unit);
+    border-bottom: 1px solid var(--bw-gray);
+}
+
+.post:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.timestamp {
+    color: #666;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+/* Cards area */
+.cards-area {
+    background: white;
+    padding: var(--spacing-unit);
+    border-radius: var(--border-radius);
+}
+
+.card-module {
+    position: relative;
+}
+
+.card-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--border-radius);
+}
+
+.card-slide {
+    display: none;
+}
+
+.card-slide.active {
+    display: block;
+}
+
+.card-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.card-content {
+    padding: var(--spacing-unit);
+}
+
+.card-content h3 {
+    margin-bottom: 10px;
+    color: var(--bw-dark);
+}
+
+/* Navigation buttons */
+.card-nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.prev-btn,
+.next-btn {
+    background: var(--bw-blue);
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    cursor: pointer;
+    border-radius: var(--border-radius);
+}
+
+.prev-btn:hover,
+.next-btn:hover {
+    background: var(--bw-dark);
+}
