@@ -27,35 +27,24 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           
-      - name: Setup directory structure
+      - name: Setup deployment directory
         run: |
-          mkdir -p static/css
-          mkdir -p static/js
-          mkdir -p static/images
-          mkdir -p assets/cards
-          mkdir -p data
-          mkdir -p templates/components
+          # Create a clean deployment directory
+          mkdir -p deploy
+          mkdir -p deploy/css
+          mkdir -p deploy/js
+          mkdir -p deploy/images
           
-      - name: Copy static assets
+      - name: Copy assets for deployment
         run: |
-          # Copy CSS files
-          cp static/css/base.css static/css/
-          cp static/css/components.css static/css/
-          cp static/css/responsive.css static/css/
+          # Copy CSS files to deployment directory
+          cp static/css/*.css deploy/css/
           
-          # Copy JavaScript files
-          cp static/js/cards.js static/js/
+          # Copy JavaScript files to deployment directory
+          cp static/js/*.js deploy/js/
           
-          # Copy card images
-          cp -r assets/cards/* static/images/
-          
-          # Copy XML data files
-          cp data/card_content.xml data/
-          cp data/updates.xml data/
-          
-          # Copy templates
-          cp templates/index.html templates/
-          cp -r templates/components/* templates/components/
+          # Copy card images to deployment directory
+          cp assets/cards/* deploy/images/
           
       - name: Run signboard update
         run: |
@@ -68,21 +57,13 @@ jobs:
           
       - name: Commit and push if changed
         run: |
-          git add .
+          git add deploy
           git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update signboard content [skip ci]" && git push)
           
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./static  # Deploy only the static directory
+          publish_dir: ./deploy
           publish_branch: gh-pages
           force_orphan: true
-          exclude_assets: |
-            **.py
-            **.pyc
-            **/__pycache__
-            **.md
-            requirements.txt
-            .gitignore
-            tests/
