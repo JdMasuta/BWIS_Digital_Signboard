@@ -75,7 +75,8 @@ class EmailSignboard:
         # Setup paths
         self.base_dir = os.path.dirname(os.path.abspath(__file__))
         self.static_dir = os.path.join(self.base_dir, 'static')
-        self.images_dir = os.path.join(self.base_dir, 'images')  # Changed to use base images directory
+        self.assets_dir = os.path.join(self.base_dir, 'assets')
+        self.cards_dir = os.path.join(self.base_dir, 'assets', 'cards')  # Changed to use base images directory
         self.html_path = os.path.join(self.base_dir, 'index.html')
         
         # Create static directory if it doesn't exist
@@ -85,7 +86,7 @@ class EmailSignboard:
         self._setup_logging()
         
         # Setup Jinja2 environment
-        self.env = Environment(loader=FileSystemLoader(self.base_dir))
+        self.env = Environment(loader=FileSystemLoader(os.path.join(self.base_dir, "templates")))
         self.env.globals['now'] = datetime.utcnow
         
         # Scan for existing images

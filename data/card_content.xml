@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cards>
+    <card>
+        <id>card1</id>
+        <title>Welcome to BWIS</title>
+        <description>Welcome to BWIS Loveland! We're here to serve our community.</description>
+        <image>img1.png</image>
+        <created_date>2024-01-30</created_date>
+        <active>true</active>
+    </card>
+    <card>
+        <id>card2</id>
+        <title>Community Events</title>
+        <description>Check out our upcoming community events and activities.</description>
+        <image>img2.png</image>
+        <created_date>2024-01-30</created_date>
+        <active>true</active>
+    </card>
+    <card>
+        <id>card3</id>
+        <title>Services</title>
+        <description>Learn about the services we offer to our community.</description>
+        <image>img3.png</image>
+        <created_date>2024-01-23</created_date>
+        <active>true</active>
+    </card>
+</cards>

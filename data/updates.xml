@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<updates>
+    <update>
+        <id>update1</id>
+        <content>Welcome to BWIS Loveland Digital Signboard! Check out our information cards.</content>
+        <timestamp>2024-11-01 05:41:06</timestamp>
+        <priority>high</priority>
+        <active>true</active>
+    </update>
+    <update>
+        <id>update2</id>
+        <content>This is a test post to demonstrate the layout. The cards on the right show our latest updates.</content>
+        <timestamp>2024-11-01 05:41:06</timestamp>
+        <priority>normal</priority>
+        <active>true</active>
+    </update>
+</updates>

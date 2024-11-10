@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BWIS Loveland Digital Signboard</title>
-    <link rel="stylesheet" href="./static/styles.css">
-    <link rel="stylesheet" href="./static/responsive.css">
-    <script src="./static/cards.js" defer></script>
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <link rel="stylesheet" href="/static/css/responsive.css">
 </head>
 <body>
-    <div class="header">
+    <header class="header">
         <h1>BWIS Loveland</h1>
-    </div>
+    </header>
 
     <div class="container">
         <div class="grid">
@@ -42,26 +42,35 @@
                     <div class="card-container">
                         
                         <div class="card-slide active">
-                            <img src="./images/PXL_20241030_050610180.jpg" alt="Pxl 20241030 050610180" class="card-image" loading="lazy">
+                            <img src="/assets/cards/welcome.jpg" 
+                                 alt="Welcome to BWIS" 
+                                 class="card-image" 
+                                 loading="lazy">
                             <div class="card-content">
-                                <h3>Pxl 20241030 050610180</h3>
-                                <p>Information about Pxl 20241030 050610180</p>
+                                <h3>Welcome to BWIS</h3>
+                                <p>Welcome to BWIS Loveland! We're here to serve our community.</p>
                             </div>
                         </div>
                         
                         <div class="card-slide ">
-                            <img src="./images/PXL_20241030_050606062.jpg" alt="Pxl 20241030 050606062" class="card-image" loading="lazy">
+                            <img src="/assets/cards/events.jpg" 
+                                 alt="Community Events" 
+                                 class="card-image" 
+                                 loading="lazy">
                             <div class="card-content">
-                                <h3>Pxl 20241030 050606062</h3>
-                                <p>Information about Pxl 20241030 050606062</p>
+                                <h3>Community Events</h3>
+                                <p>Check out our upcoming community events and activities.</p>
                             </div>
                         </div>
                         
                         <div class="card-slide ">
-                            <img src="./images/PXL_20241023_023050447.jpg" alt="Pxl 20241023 023050447" class="card-image" loading="lazy">
+                            <img src="/assets/cards/services.jpg" 
+                                 alt="Services" 
+                                 class="card-image" 
+                                 loading="lazy">
                             <div class="card-content">
-                                <h3>Pxl 20241023 023050447</h3>
-                                <p>Information about Pxl 20241023 023050447</p>
+                                <h3>Services</h3>
+                                <p>Learn about the services we offer to our community.</p>
                             </div>
                         </div>
                         
@@ -74,5 +83,7 @@
             </div>
         </div>
     </div>
+
+    <script src="/static/js/cards.js"></script>
 </body>
 </html>
