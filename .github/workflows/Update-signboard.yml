@@ -27,20 +27,40 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           
-      - name: Create required directories
+      - name: Setup directory structure
         run: |
-          mkdir -p static
-          mkdir -p images
+          mkdir -p static/css
+          mkdir -p static/js
+          mkdir -p static/images
+          mkdir -p assets/cards
+          mkdir -p data
+          mkdir -p templates/components
           
-      - name: Copy template files
+      - name: Copy static assets
         run: |
-          cp signboard-cards.js static/cards.js
-          cp signboard-styles.css static/styles.css
-          cp responsive-styles.css static/responsive.css
+          # Copy CSS files
+          cp static/css/base.css static/css/
+          cp static/css/components.css static/css/
+          cp static/css/responsive.css static/css/
           
-      - name: Update signboard content
-        run: python signboard.py --test --github
+          # Copy JavaScript files
+          cp static/js/cards.js static/js/
           
+          # Copy card images
+          cp -r assets/cards/* static/images/
+          
+          # Copy XML data files
+          cp data/card_content.xml data/
+          cp data/updates.xml data/
+          
+          # Copy templates
+          cp templates/index.html templates/
+          cp -r templates/components/* templates/components/
+          
+      - name: Run signboard update
+        run: |
+          python -m app.run_signboard --test
+        
       - name: Configure Git
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -55,7 +75,14 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
+          publish_dir: ./static  # Deploy only the static directory
           publish_branch: gh-pages
           force_orphan: true
-          exclude_assets: '**.py,**.md,requirements.txt,.gitignore'
+          exclude_assets: |
+            **.py
+            **.pyc
+            **/__pycache__
+            **.md
+            requirements.txt
+            .gitignore
+            tests/
