@@ -1,4 +1,5 @@
 import os
+from .project_paths import paths
 import requests
 import logging
 from pathlib import Path
@@ -95,11 +96,11 @@ class ServerCheck:
             js_files = list(static_dir.glob('js/*.js'))
             
             self.results["static"].extend(self.check_directory(
-                'static/css', 
+                paths.static / "css", 
                 [f.name for f in css_files]
             ))
             self.results["static"].extend(self.check_directory(
-                'static/js', 
+                paths.static / "js", 
                 [f.name for f in js_files]
             ))
         else:
@@ -110,7 +111,7 @@ class ServerCheck:
         if assets_dir.exists():
             card_images = list(assets_dir.glob('cards/*.*'))
             self.results["assets"].extend(self.check_directory(
-                'assets/cards', 
+                paths.cards, 
                 [f.name for f in card_images]
             ))
         else:

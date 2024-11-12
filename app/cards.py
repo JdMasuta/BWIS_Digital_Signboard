@@ -1,5 +1,6 @@
 """Card management module for the signboard application."""
 from dataclasses import dataclass
+from project_paths import paths
 from datetime import datetime
 import xml.etree.ElementTree as ET
 import os
@@ -20,14 +21,14 @@ class CardManager:
     """Manages card content and operations"""
     def __init__(self, base_dir: str, logger: Optional[logging.Logger] = None):
         self.base_dir = base_dir
-        self.cards_dir = os.path.join(base_dir, 'assets', 'cards')
+        self.cards_dir = paths.cards
         self.cards: List[InfoCard] = []
         self.logger = logger or logging.getLogger(__name__)
 
     def load_cards(self) -> List[InfoCard]:
         """Load cards from XML configuration"""
         try:
-            tree = ET.parse(os.path.join(self.base_dir, 'data', 'card_content.xml'))
+            tree = ET.parse(paths.data / "card_content.xml")
             root = tree.getroot()
             
             cards = []

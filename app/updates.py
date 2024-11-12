@@ -1,5 +1,6 @@
 """Update management module for the signboard application."""
 import xml.etree.ElementTree as ET
+from project_paths import paths
 import os
 import logging
 from typing import List, Dict, Optional
@@ -18,7 +19,7 @@ class UpdateManager:
     def load_updates(self) -> List[Dict[str, str]]:
         """Load updates from XML file"""
         try:
-            tree = ET.parse(os.path.join(self.base_dir, 'data', 'updates.xml'))
+            tree = ET.parse(paths.data / "updates.xml")
             root = tree.getroot()
             
             updates = []

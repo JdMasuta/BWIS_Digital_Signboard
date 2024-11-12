@@ -3,35 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="refresh" content="0; url=templates/index.html">
-    <title>Redirecting...</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            text-align: center;
-            color: #333;
-        }
-        .message {
-            margin-top: 20px;
-        }
-        .link {
-            color: #00A4E3;
-            text-decoration: none;
-        }
-        .link:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <title>BWIS Loveland Digital Signboard</title>
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <link rel="stylesheet" href="/static/css/responsive.css">
 </head>
 <body>
-    <div class="message">
-        <h1>Redirecting...</h1>
-        <p>If you are not redirected automatically, please <a href="templates/index.html" class="link">click here</a>.</p>
+    <header class="header">
+        <h1>BWIS Loveland</h1>
+    </header>
+
+    <div class="container">
+        <div class="grid">
+            <!-- Updates Section -->
+            <div class="posts-area">
+                    <div class="post">
+                        <div class="content">
+                            Welcome to BWIS Loveland Digital Signboard! Check out our information cards.
+                        </div>
+                        <div class="timestamp">
+                            Posted: 2024-11-01 05:41:06
+                        </div>
+                    </div>
+                
+                    <div class="post">
+                        <div class="content">
+                            This is a test post to demonstrate the layout. The cards on the right show our latest updates.
+                        </div>
+                        <div class="timestamp">
+                            Posted: 2024-11-01 05:41:06
+                        </div>
+                    </div>
+                
+                
+            </div>
+
+            <!-- Cards Section -->
+            <div class="cards-area">
+                <div class="card-module">
+                    <div class="card-container">
+                    <div class="card-slide active">
+                        <img src="/assets/cards/welcome.png" 
+                             alt="Welcome to BWIS" 
+                             class="card-image" 
+                             loading="lazy">
+                        <div class="card-content">
+                            <h3>Welcome to BWIS</h3>
+                            <p>Welcome to BWIS Loveland! We're here to serve our community.</p>
+                        </div>
+                    </div>
+                
+                    <div class="card-slide">
+                        <img src="/assets/cards/community.png" 
+                             alt="Community Events" 
+                             class="card-image" 
+                             loading="lazy">
+                        <div class="card-content">
+                            <h3>Community Events</h3>
+                            <p>Check out our upcoming community events and activities.</p>
+                        </div>
+                    </div>
+                
+                    <div class="card-slide">
+                        <img src="/assets/cards/services.png" 
+                             alt="Services" 
+                             class="card-image" 
+                             loading="lazy">
+                        <div class="card-content">
+                            <h3>Services</h3>
+                            <p>Learn about the services we offer to our community.</p>
+                        </div>
+                    </div>
+                
+                        
+                    </div>
+                    <div class="card-nav">
+                        <button class="prev-btn">‹</button>
+                        <button class="next-btn">›</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <script>
-        window.location.replace('templates/index.html');
-    </script>
+
+    <script src="/static/js/cards.js"></script>
 </body>
 </html>
