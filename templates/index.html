@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BWIS Loveland Digital Signboard</title>
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <link rel="stylesheet" href="/static/css/responsive.css">
+    <link rel="stylesheet" href="/static/css/clock.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-time-container">
+            <div id="date-display" class="header-date">Loading date...</div>
+            <h1>BWIS Loveland</h1>
+            <div id="clock-display" class="header-clock">Loading time...</div>
+        </div>
+    </header>
+    <div class="container">
+        <div class="grid">
+            <!-- Updates Section -->
+            <div class="posts-area">
+            </div>
+            <!-- Cards Section -->
+            <div class="cards-area">
+                <div class="card-module">
+                    <div class="card-container">
+                    </div>
+                    <div class="card-nav">
+                        <button class="prev-btn">‹</button>
+                        <button class="next-btn">›</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/static/js/cards.js"></script>
+    <script src="/static/js/clock.js"></script>
+</body>
+</html>
