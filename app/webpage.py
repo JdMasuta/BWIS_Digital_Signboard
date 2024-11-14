@@ -54,12 +54,26 @@ class WebpageManager:
                     </div>
                 """
 
+            # Make sure the header section includes the clock container
+            header_html = """
+            <div class="header">
+                <h1>BWIS Loveland</h1>
+                <div class="header-time-container">
+                    <div id="date-display" class="header-date"></div>
+                    <div id="clock-display" class="header-clock"></div>
+                </div>
+            </div>
+            """
+
             # Read base template
             with open(os.path.join(self.base_dir, 'templates', template_name), 'r', encoding='utf-8') as f:
                 template_content = f.read()
 
             # Insert content into template sections
             html_content = template_content.replace(
+                '::: header', 
+                f'::: header\n{header_html}'
+            ).replace(
                 '<div class="posts-area">', 
                 f'<div class="posts-area">{updates_html}'
             ).replace(
