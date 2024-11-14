@@ -1,15 +1,16 @@
 name: Update Signboard
-
 on:
   push:
     branches: [ main ]
   schedule:
-    - cron: '*/30 * * * *'  # Runs every 30 minutes
+    - cron: '*/30 * * * *'  # Fixed cron syntax
   workflow_dispatch:  # Allows manual triggering
 
 jobs:
   update-signboard:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Add permissions for GitHub Pages deployment
     
     steps:
       - name: Checkout repository
@@ -31,34 +32,28 @@ jobs:
         run: |
           # Create a clean deployment directory
           mkdir -p deploy
-          mkdir -p deploy/css
-          mkdir -p deploy/js
+          mkdir -p deploy/static  # Changed to match your HTML structure
           mkdir -p deploy/images
           
       - name: Copy assets for deployment
         run: |
-          # Copy CSS files to deployment directory
-          cp static/css/*.css deploy/css/
+          # Copy the index.html file
+          cp index.html deploy/
           
-          # Copy JavaScript files to deployment directory
-          cp static/js/*.js deploy/js/
+          # Copy all static files (CSS and JS)
+          cp -r static/* deploy/static/
           
-          # Copy card images to deployment directory
-          cp assets/cards/* deploy/images/
+          # Copy images
+          cp -r images/* deploy/images/
           
       - name: Run signboard update
         run: |
-          python -m app.run_signboard --test
+          python app/run_signboard --test
         
       - name: Configure Git
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          
-      - name: Commit and push if changed
-        run: |
-          git add deploy
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update signboard content [skip ci]" && git push)
           
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
