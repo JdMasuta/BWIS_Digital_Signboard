@@ -3,20 +3,20 @@ on:
   push:
     branches: [ main ]
   schedule:
-    - cron: '*/30 * * * *'  # Fixed cron syntax
-  workflow_dispatch:  # Allows manual triggering
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
 
 jobs:
   update-signboard:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Add permissions for GitHub Pages deployment
+      contents: write
     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Fetch all history for proper git operations
+          fetch-depth: 0
       
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -30,31 +30,17 @@ jobs:
           
       - name: Setup deployment directory
         run: |
-          # Create a clean deployment directory
           mkdir -p deploy
-          mkdir -p deploy/static  # Changed to match your HTML structure
-          mkdir -p deploy/images
-          
-      - name: Copy assets for deployment
-        run: |
-          # Copy the index.html file
+          cp -r static deploy/
+          cp -r assets deploy/
+          cp -r app deploy/
           cp index.html deploy/
           
-          # Copy all static files (CSS and JS)
-          cp -r static/* deploy/static/
-          
-          # Copy images
-          cp -r assets/cards/* deploy/images/
-
       - name: Run signboard update
         run: |
-          python app/run_signboard --test
+          cd deploy
+          python app/run_signboard.py --test
         
-      - name: Configure Git
-        run: |
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
