@@ -44,11 +44,11 @@ jobs:
           cp -r static/* deploy/static/
           
           # Copy images
-          cp -r images/* deploy/images/
-          
-      - name: Run signboard update
-        run: |
-          python app/run_signboard --test
+          cp -r assets/cards/* deploy/images/
+
+         - name: Run signboard update
+           run: |
+             python app/run_signboard --test
         
       - name: Configure Git
         run: |
