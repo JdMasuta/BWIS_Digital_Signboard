@@ -28,13 +28,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           
-      - name: Setup deployment directory
+      - name: Copy to deploy directory
         run: |
-          mkdir -p deploy
-          cp -r static deploy/
-          cp -r assets deploy/
-          cp -r app deploy/
-          cp index.html deploy/
+          cp -r . deploy/
+          rm -rf deploy/.git
           
       - name: Run signboard update
         run: |
