@@ -46,9 +46,9 @@ jobs:
           # Copy images
           cp -r assets/cards/* deploy/images/
 
-         - name: Run signboard update
-           run: |
-             python app/run_signboard --test
+      - name: Run signboard update
+        run: |
+          python app/run_signboard --test
         
       - name: Configure Git
         run: |
