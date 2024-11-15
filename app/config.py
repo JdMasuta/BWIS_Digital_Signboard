@@ -4,8 +4,8 @@ from dataclasses import dataclass
 @dataclass
 class SignboardConfig:
     """Configuration settings for the signboard"""
-    email_address: str
-    password: str
+    email_address: str = "bwislovpidisplay@gmail.com"
+    password: str = "ajnz ymqn hpqs fxgc"
     imap_server: str = "imap.gmail.com"
     check_interval: int = 300
     max_posts: int = 20

@@ -8,6 +8,8 @@ import argparse
 from datetime import datetime
 from typing import Optional
 import traceback
+from pathlib import Path
+from project_paths import paths
 
 class VerboseAction(argparse.Action):
     """Custom action to handle multiple verbose flags"""
@@ -43,7 +45,8 @@ def setup_logging(verbose_level: int = 0) -> logging.Logger:
     console_handler.setFormatter(logging.Formatter(format_string))
     
     # Create file handler with full verbosity
-    file_handler = logging.FileHandler('signboard.log')
+    log_file = paths.root / 'signboard.log'
+    file_handler = logging.FileHandler(log_file)
     file_format = ('%(asctime)s - %(name)s - %(levelname)s - '
                   '%(filename)s:%(lineno)d - %(message)s')
     file_handler.setFormatter(logging.Formatter(file_format))
@@ -64,42 +67,38 @@ def check_environment(logger: logging.Logger) -> bool:
     Returns:
         bool: True if environment is valid, False otherwise
     """
-    required_dirs = ['templates', 'static', 'assets', 'data']
-    required_files = [
-        os.path.join('data', 'card_content.xml'),
-        os.path.join('data', 'updates.xml'),
-        os.path.join('templates', 'index.html')
-    ]
-    
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    
-    # Check directories
-    for dir_name in required_dirs:
-        dir_path = os.path.join(base_dir, dir_name)
-        if not os.path.isdir(dir_path):
-            logger.error(f"Required directory missing: {dir_name}")
-            return False
-        logger.debug(f"Found required directory: {dir_name}")
-    
-    # Check files
-    for file_name in required_files:
-        file_path = os.path.join(base_dir, file_name)
-        if not os.path.isfile(file_path):
-            logger.error(f"Required file missing: {file_name}")
-            return False
-        logger.debug(f"Found required file: {file_name}")
-    
-    return True
+    try:
+        # Ensure required directories exist
+        paths.ensure_directories()
+        logger.debug("Required directories exist or were created")
+        
+        # Check required files
+        required_files = [
+            paths.data / 'card_content.xml',
+            paths.data / 'updates.xml',
+            paths.templates / 'index.html'
+        ]
+        
+        for file_path in required_files:
+            if not file_path.is_file():
+                logger.error(f"Required file missing: {file_path}")
+                return False
+            logger.debug(f"Found required file: {file_path}")
+        
+        return True
+        
+    except Exception as e:
+        logger.error(f"Error checking environment: {str(e)}")
+        return False
 
-def create_test_content(base_dir: str, logger: logging.Logger) -> None:
-    """Create test content for development
+def update_webpage_content(logger: logging.Logger) -> None:
+    """Update webpage with current content from cards and updates
     
     Args:
-        base_dir (str): Base directory path
         logger (logging.Logger): Logger instance
         
     Raises:
-        Exception: If content creation fails
+        Exception: If update process fails
     """
     try:
         logger.debug("Importing required modules...")
@@ -107,41 +106,63 @@ def create_test_content(base_dir: str, logger: logging.Logger) -> None:
         from updates import UpdateManager
         from webpage import WebpageManager
         
-        logger.debug("Initializing managers...")
-        card_manager = CardManager(base_dir, logger)
-        update_manager = UpdateManager(base_dir, logger)
-        webpage_manager = WebpageManager(base_dir, logger)
+        # Initialize managers
+        logger.debug("Initializing content managers...")
+        card_manager = CardManager(paths.root, logger)
+        update_manager = UpdateManager(paths.root, logger)
+        webpage_manager = WebpageManager(paths.root, logger)
         
-        logger.debug("Loading cards from XML...")
+        # Load current content
+        logger.debug("Loading content...")
         cards = card_manager.load_cards()
-        logger.debug(f"Loaded {len(cards)} cards")
-        
-        logger.debug("Loading updates from XML...")
         updates = update_manager.load_updates()
-        logger.debug(f"Loaded {len(updates)} updates")
         
-        logger.debug("Preparing card data for webpage...")
-        logger.debug("Building image paths from asset directory...")
+        logger.debug(f"Loaded {len(cards)} cards and {len(updates)} updates")
+        
+        # Prepare card data for webpage
         card_data = [{
             'title': card.title,
             'description': card.description,
-            'image': os.path.join('/assets/cards', card.image_path)  # Prepend web-accessible path
+            'image': os.path.join('/assets/cards', card.image_path)
         } for card in cards]
-        logger.debug(f"Processed {len(card_data)} cards with image paths")
-
-        # Log individual card paths in very verbose mode
-        if logger.level <= logging.DEBUG:
-            for i, card in enumerate(card_data):
-                logger.debug(f"Card {i+1}: {card['title']} -> {card['image']}")
         
+        # Update webpage
         logger.debug("Updating webpage...")
         webpage_manager.update_webpage(updates, card_data)
-        logger.info("Test content created successfully")
+        logger.info("Webpage updated successfully")
         
     except Exception as e:
-        logger.error(f"Error creating test content: {str(e)}")
-        if logger.level <= logging.DEBUG:
-            logger.debug("Traceback:", exc_info=True)
+        logger.error(f"Error updating webpage content: {str(e)}")
+        raise
+
+def check_email_updates(logger: logging.Logger) -> None:
+    """Check for email updates and process them
+    
+    Args:
+        logger (logging.Logger): Logger instance
+        
+    Raises:
+        Exception: If update process fails
+    """
+    try:
+        logger.debug("Importing required modules...")
+        from email_checker import EmailChecker
+        from config import SignboardConfig
+        
+        # Initialize and run email checker
+        logger.info("Checking for email updates...")
+        config = SignboardConfig()
+        if not config.validate():
+            raise ValueError("Invalid configuration")
+            
+        email_checker = EmailChecker(config, logger)
+        email_checker.check_for_updates()
+        
+        # Update webpage with any new content
+        update_webpage_content(logger)
+        
+    except Exception as e:
+        logger.error(f"Error checking email updates: {str(e)}")
         raise
 
 def main():
@@ -150,13 +171,19 @@ def main():
         description='BWIS Digital Signboard',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
+Operating modes:
+  Default:    Check for email updates and update the webpage
+  Test:       Create test content and update the webpage
+
 Verbose mode details:
-  -v    Show debug logs and basic operational information
-  -vv   Show detailed debug logs including file locations and line numbers
+  -v         Show debug logs and basic operational information
+  -vv        Show detailed debug logs including file locations and line numbers
         """
     )
     parser.add_argument('--test', action='store_true', 
-                       help='Create test content')
+                       help='Create test content instead of checking emails')
+    parser.add_argument('--clean-test', action='store_true',
+                       help='Remove test content')
     parser.add_argument('-v', dest='verbose', action=VerboseAction, nargs=0,
                        help='Increase verbosity level (can be used multiple times)')
     
@@ -168,23 +195,29 @@ Verbose mode details:
     logger.debug(f"Verbosity level: {verbose_level}")
     
     try:
-        # Get base directory
-        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        logger.debug(f"Base directory: {base_dir}")
-        
         # Check environment
         logger.debug("Checking environment...")
         if not check_environment(logger):
             logger.error("Environment check failed")
             sys.exit(1)
         
+        # Handle test content cleanup if requested
+        if args.clean_test:
+            logger.info("Cleaning up test content...")
+            from test_content import TestContentManager
+            TestContentManager.cleanup_test_content()
+            logger.info("Test content cleanup complete")
+            sys.exit(0)
+        
         # Execute requested operation
         if args.test:
             logger.info("Creating test content...")
-            create_test_content(base_dir, logger)
+            from test_content import TestContentManager
+            test_manager = TestContentManager(logger)
+            test_manager.create_test_content()
         else:
-            logger.error("Please use --test flag for now")
-            sys.exit(1)
+            logger.info("Running email update check...")
+            check_email_updates(logger)
             
     except KeyboardInterrupt:
         logger.info("Operation cancelled by user")

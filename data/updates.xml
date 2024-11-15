@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <updates>
     <update>
         <id>update1</id>
@@ -14,4 +14,4 @@
         <priority>normal</priority>
         <active>true</active>
     </update>
-</updates>
+<update><id>update3</id><content>This is a test update that was sent from my email! 🤠</content><timestamp>2024-11-14 17:06:42</timestamp><priority>normal</priority><active>true</active></update></updates>
