@@ -10,15 +10,15 @@ class WebpageManager:
     def __init__(self, base_dir: str, logger: Optional[logging.Logger] = None):
         self.base_dir = base_dir
         self.logger = logger or logging.getLogger(__name__)
-        
+
         # Setup Jinja2 environment
         template_dir = os.path.join(base_dir, 'templates')
         self.env = Environment(loader=FileSystemLoader(template_dir))
-        
+
         # Output path is at project root
         self.output_path = os.path.join(base_dir, 'index.html')
 
-    def update_webpage(self, updates: List[Dict[str, str]], card_data: List[Dict[str, str]], 
+    def update_webpage(self, updates: List[Dict[str, str]], card_data: List[Dict[str, str]],
                       template_name: str = 'index.html', max_posts: int = 20) -> None:
         """Update the HTML file with content"""
         try:
@@ -43,9 +43,9 @@ class WebpageManager:
                 active_class = " active" if i == 0 else ""
                 cards_html += f"""
                     <div class="card-slide{active_class}">
-                        <img src="{card['image']}" 
-                             alt="{card['title']}" 
-                             class="card-image" 
+                        <img src="{card['image']}"
+                             alt="{card['title']}"
+                             class="card-image"
                              loading="lazy">
                         <div class="card-content">
                             <h3>{card['title']}</h3>
@@ -57,11 +57,8 @@ class WebpageManager:
             # Make sure the header section includes the clock container
             header_html = """
             <div class="header">
+                <img src="assets\branding\logo\BW Integrated Systems.png"
                 <h1>BWIS Loveland</h1>
-                <div class="header-time-container">
-                    <div id="date-display" class="header-date"></div>
-                    <div id="clock-display" class="header-clock"></div>
-                </div>
             </div>
             """
 
@@ -71,13 +68,13 @@ class WebpageManager:
 
             # Insert content into template sections
             html_content = template_content.replace(
-                '::: header', 
+                '::: header',
                 f'::: header\n{header_html}'
             ).replace(
-                '<div class="posts-area">', 
+                '<div class="posts-area">',
                 f'<div class="posts-area">{updates_html}'
             ).replace(
-                '<div class="card-container">', 
+                '<div class="card-container">',
                 f'<div class="card-container">{cards_html}'
             )
 
